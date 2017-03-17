@@ -10,18 +10,8 @@ public class SymbolTable {
 
     int current_scope, next_scope;
 
-    class Entry {
-        public Entry(int scope, Dec dec) {
-            this.scope = scope;
-            this.dec = dec;
-        }
 
-        int scope;
-        Dec dec;
-
-    }
-
-    Map<String, HashMap<Integer, Entry>> entries = new HashMap<String, HashMap<Integer, Entry>>();
+    Map<String, HashMap<Integer, Dec>> entries = new HashMap<String, HashMap<Integer, Dec>>();
     Stack<Integer> scopeStack = new Stack<Integer>();
 
     /**
@@ -44,16 +34,16 @@ public class SymbolTable {
 
     public boolean insert(String ident, Dec dec) {
         Map entryMap = entries.get(ident);
-          if(entryMap != null ){
-              Entry temp = (Entry) entryMap.get(current_scope);
-              if(temp != null){
-                  return false;
-              }
-              entryMap.put(current_scope, new Entry(current_scope, dec));
-          }else{
-              entryMap.put(current_scope, new Entry(current_scope, dec));
-          }
-        entries.put(ident, (HashMap<Integer, Entry>) entryMap);
+        if (entryMap != null) {
+            Dec temp = (Dec) entryMap.get(current_scope);
+            if (temp != null) {
+                return false;
+            }
+            entryMap.put(current_scope, dec);
+        } else {
+            entryMap.put(current_scope, dec);
+        }
+        entries.put(ident, (HashMap<Integer, Dec>) entryMap);
         return true;
 
     }
@@ -64,23 +54,23 @@ public class SymbolTable {
         if (entryMap == null) {
             return null;
         }
-        Entry temp;
-        int topScope = current_scope;
+        Dec temp;
+        int topScope = 0;
         for (int i = scopeStack.size() - 1; i >= 0; i--) {
             int scope = scopeStack.get(i);
-            temp = (Entry) entryMap.get(scope);
-            if(temp != null){
+            temp = (Dec) entryMap.get(scope);
+            if (temp != null) {
                 topScope = scope;
                 break;
             }
         }
-        temp = (Entry)entryMap.get(topScope);
-        return temp.dec;
+        temp = (Dec) entryMap.get(topScope);
+        return temp;
     }
 
     public SymbolTable() {
         int next_scope = 0;
-        HashMap<String, HashMap<Integer, Entry>> entries = new HashMap<String, HashMap<Integer, Entry>>();
+        HashMap<String, HashMap<Integer, Dec>> entries = new HashMap<String, HashMap<Integer, Dec>>();
         Stack<Integer> scopeStack = new Stack<Integer>();
 
     }
@@ -90,41 +80,23 @@ public class SymbolTable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Symbol Table:");
-        sb.append("\n");
-        Set entryMapSet = entries.entrySet();
-
-        for(int i = scopeStack.size() - 1; i >=0; i--) {
-            sb.append("In scope number = " + scopeStack.get(i) + " : ");
-            Iterator<HashMap.Entry<String, HashMap<Integer, Entry>>> it = entries
-                    .entrySet().iterator();
-
-            while (it.hasNext()) {
-
-                // entry.getKey() 返回与此项对应的键
-                // entry.getValue() 返回与此项对应的值
-
-                Map.Entry entry = (Map.Entry)it.next();
-                System.out.print("/n"+entry.getKey());
-
-                HashMap tmp_in_hashmap=(HashMap)entry.getValue();
-
-                Iterator<Map.Entry<Integer, Entry>> entryIterator = tmp_in_hashmap
-                        .entrySet().iterator();
-
-                while(entryIterator.hasNext()){
-                    Map.Entry in_entry = (Map.Entry)entryIterator.next();
-                    System.out.println("->"+in_entry.getKey()+":");
-                    int[] array=(int[])in_entry.getValue();
-                    for(int each:array){
-                        System.out.print(each+" ");
-                    }
-                }
-
+        sb.append('\n');
+        Set Stringkey = entries.keySet();
+        Iterator<String> stringIterator = Stringkey.iterator();
+        while (stringIterator.hasNext()) {
+            String ident = stringIterator.next();
+            sb.append("Ident " + ident + ", scope number = ");
+            Map<Integer, Dec> entryMap = entries.get(ident);
+            Set decScope = entryMap.keySet();
+            Iterator<Integer> integerIterator = decScope.iterator();
+            while (integerIterator.hasNext()) {
+                int scope = integerIterator.next();
+                sb.append(scope + ", ");
             }
-
+            sb.append('\n');
         }
-        return "";
-    }
 
+        return sb.toString();
+    }
 
 }
