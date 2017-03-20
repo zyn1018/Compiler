@@ -84,7 +84,6 @@ public class SymbolTable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-
         sb.append("Symbol Table: ");
         sb.append("\n");
         Set Stringkey = entries.keySet();
@@ -97,13 +96,11 @@ public class SymbolTable {
             Iterator<Integer> integerIterator = decScope.iterator();
             while (integerIterator.hasNext()) {
                 int scope = integerIterator.next();
-                Dec dec = (Dec) entryMap.get(scope);
+                Dec dec = entryMap.get(scope);
                 sb.append(scope + ", " + "type: " + dec.getTypeName());
             }
             sb.append("\n");
         }
-
         return sb.toString();
     }
-
 }
