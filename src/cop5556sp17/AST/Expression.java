@@ -9,7 +9,7 @@ public abstract class Expression extends ASTNode {
         super(firstToken);
     }
 
-    private TypeName typeName;
+    private TypeName typeName = TypeName.NONE;
 
     public TypeName getTypeName() {
         return typeName;

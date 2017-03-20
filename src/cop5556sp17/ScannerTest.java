@@ -467,5 +467,13 @@ public class ScannerTest {
         assertEquals(5, token6.pos);
     }
 
+    @Test
+    public void test11() throws IllegalCharException, IllegalNumberException {
+        String input = "boolean y \ny <- false;";
+        Scanner scanner = new Scanner(input);
+        scanner.scan();
+        Scanner.Token token1 = scanner.nextToken();
+        assertEquals(KW_BOOLEAN, token1.kind);
+    }
 
 }

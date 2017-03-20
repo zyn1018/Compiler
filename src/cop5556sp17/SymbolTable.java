@@ -32,19 +32,23 @@ public class SymbolTable {
         }
     }
 
-    public boolean insert(String ident, Dec dec) {
-        Map entryMap = entries.get(ident);
+    public boolean insert(String ident, Dec dec) throws Parser.SyntaxException {
+        Map<Integer, Dec> entryMap = entries.get(ident);
         if (entryMap != null) {
-            Dec temp = (Dec) entryMap.get(current_scope);
+            Dec temp = entryMap.get(current_scope);
             if (temp != null) {
                 return false;
+            } else {
+                entryMap.put(current_scope, dec);
+                entries.put(ident, (HashMap<Integer, Dec>) entryMap);
+                return true;
             }
-            entryMap.put(current_scope, dec);
         } else {
-            entryMap.put(current_scope, dec);
+            Map<Integer, Dec> newEntryMap = new HashMap<>();
+            newEntryMap.put(current_scope, dec);
+            entries.put(ident, (HashMap<Integer, Dec>) newEntryMap);
+            return true;
         }
-        entries.put(ident, (HashMap<Integer, Dec>) entryMap);
-        return true;
 
     }
 
@@ -69,10 +73,10 @@ public class SymbolTable {
     }
 
     public SymbolTable() {
-        int current_scope = 0;
-        int next_scope = 0;
-        HashMap<String, HashMap<Integer, Dec>> entries = new HashMap<String, HashMap<Integer, Dec>>();
-        Stack<Integer> scopeStack = new Stack<Integer>();
+        current_scope = 0;
+        next_scope = 0;
+        entries = new HashMap<String, HashMap<Integer, Dec>>();
+        scopeStack = new Stack<Integer>();
 
     }
 
@@ -80,21 +84,23 @@ public class SymbolTable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Symbol Table:");
-        sb.append('\n');
+
+        sb.append("Symbol Table: ");
+        sb.append("\n");
         Set Stringkey = entries.keySet();
         Iterator<String> stringIterator = Stringkey.iterator();
         while (stringIterator.hasNext()) {
             String ident = stringIterator.next();
-            sb.append("Ident " + ident + ", scope number = ");
+            sb.append("identifier " + ident + ", scope number = ");
             Map<Integer, Dec> entryMap = entries.get(ident);
             Set decScope = entryMap.keySet();
             Iterator<Integer> integerIterator = decScope.iterator();
             while (integerIterator.hasNext()) {
                 int scope = integerIterator.next();
-                sb.append(scope + ", ");
+                Dec dec = (Dec) entryMap.get(scope);
+                sb.append(scope + ", " + "type: " + dec.getTypeName());
             }
-            sb.append('\n');
+            sb.append("\n");
         }
 
         return sb.toString();

@@ -7,7 +7,7 @@ public class Dec extends ASTNode {
 
     final Token ident;
 
-    private TypeName typeName;
+    private TypeName typeName = TypeName.NONE;
 
     public TypeName getTypeName() {
         return typeName;
