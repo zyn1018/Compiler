@@ -35,8 +35,7 @@ public class SymbolTable {
     public boolean insert(String ident, Dec dec) throws Parser.SyntaxException {
         Map<Integer, Dec> entryMap = entries.get(ident);
         if (entryMap != null) {
-            Dec temp = entryMap.get(current_scope);
-            if (temp != null) {
+            if (entryMap.containsKey(current_scope)) {
                 return false;
             } else {
                 entryMap.put(current_scope, dec);

@@ -94,4 +94,5 @@ public class TypeCheckVisitorTest {
         program.visit(v, null);
 
     }
+
 }
