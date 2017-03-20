@@ -231,7 +231,6 @@ public class TypeCheckVisitor implements ASTVisitor {
         TypeName identLvalueType = assignStatement.getVar().getDec().getTypeName();
         TypeName exprTypeName = expr.getTypeName();
         if (exprTypeName.isType(identLvalueType)) {
-            expr.visit(this, arg);
             return null;
         } else
             throw new TypeCheckException("Encounterd a type error at " + assignStatement.getFirstToken().getLinePos() + " when visiting assignstatement");
