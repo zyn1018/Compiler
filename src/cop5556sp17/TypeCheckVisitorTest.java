@@ -1,7 +1,6 @@
 /**
  * Important to test the error cases in case the
  * AST is not being completely traversed.
- * <p>
  * Only need to test syntactically correct programs, or
  * program fragments.
  */
