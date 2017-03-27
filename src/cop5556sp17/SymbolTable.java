@@ -8,11 +8,9 @@ import java.util.*;
 
 public class SymbolTable {
 
-    int current_scope, next_scope;
-
-
-    Map<String, HashMap<Integer, Dec>> entries = new HashMap<String, HashMap<Integer, Dec>>();
-    Stack<Integer> scopeStack = new Stack<Integer>();
+    private int current_scope, next_scope;
+    private Map<String, HashMap<Integer, Dec>> entries = new HashMap<String, HashMap<Integer, Dec>>();
+    private Stack<Integer> scopeStack = new Stack<Integer>();
 
     /**
      * to be called when block entered
