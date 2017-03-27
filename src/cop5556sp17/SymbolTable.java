@@ -73,7 +73,7 @@ public class SymbolTable {
 
     public SymbolTable() {
         current_scope = 0;
-        next_scope = 0;
+        next_scope = 1;
         entries = new HashMap<String, HashMap<Integer, Dec>>();
         scopeStack = new Stack<Integer>();
 
