@@ -261,7 +261,6 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
         Label endLabel = new Label();
         for (Dec dec : block.getDecs()) {
             dec.visit(this, arg);
-            mv.visitLabel(endLabel);
             endLabelMap.put(dec, endLabel);
         }
 
