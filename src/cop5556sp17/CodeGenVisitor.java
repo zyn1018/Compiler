@@ -128,7 +128,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
         Label endRun = new Label();
         mv.visitLabel(endRun);
         mv.visitLocalVariable("this", classDesc, null, startRun, endRun, 0);
-        //TODO  visit the local variables
+        // visit the local variables
         List<Dec> decList = program.getB().getDecs();
         for (Dec dec : decList) {
             mv.visitLocalVariable(dec.getIdent().getText(), dec.getTypeName().getJVMTypeDesc(), null, startLabelMap.get(dec), endLabelMap.get(dec), dec.slotNum);
@@ -148,7 +148,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
     public Object visitAssignmentStatement(AssignmentStatement assignStatement, Object arg) throws Exception {
         assignStatement.getE().visit(this, arg);
         CodeGenUtils.genPrint(DEVEL, mv, "\nassignment: " + assignStatement.var.getText() + "=");
-//        CodeGenUtils.genPrintTOS(GRADE, mv, assignStatement.getE().getTypeName());
+        CodeGenUtils.genPrintTOS(GRADE, mv, assignStatement.getE().getTypeName());
         assignStatement.getVar().visit(this, arg);
         return null;
     }
