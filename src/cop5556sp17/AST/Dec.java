@@ -17,6 +17,8 @@ public class Dec extends ASTNode {
         this.typeName = typeName;
     }
 
+    public int slotNum;
+
     public Dec(Token firstToken, Token ident) {
         super(firstToken);
 

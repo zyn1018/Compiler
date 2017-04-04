@@ -95,4 +95,27 @@ public class TypeCheckVisitorTest {
 
     }
 
+    @Test
+    public void test1() throws Exception {
+        String input = "p integer a, integer b {image img1 image img2 if(img1 != img2) {image a a <- img1; } if(a != b) {boolean a a <- img1 != img2; }}";
+        Scanner scanner = new Scanner(input);
+        scanner.scan();
+        Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+        TypeCheckVisitor v = new TypeCheckVisitor();
+        //thrown.expect(TypeCheckVisitor.TypeCheckException.class);
+        program.visit(v, null);
+    }
+
+    @Test
+    public void test2() throws Exception {
+        String input = "prog3 integer i{ integer x integer y boolean z  if(true){x<-1;y<-1000;y<-y+1;z<-x==y;} while(i<4){i<-i+1;integer xx xx<-1;xx<-xx-1;}}";
+        Scanner scanner = new Scanner(input);
+        scanner.scan();
+        Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+        TypeCheckVisitor v = new TypeCheckVisitor();
+        //thrown.expect(TypeCheckVisitor.TypeCheckException.class);
+        program.visit(v, null);
+    }
 }

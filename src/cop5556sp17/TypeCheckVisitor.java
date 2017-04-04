@@ -72,10 +72,10 @@ public class TypeCheckVisitor implements ASTVisitor {
         TypeName e0 = binaryExpression.getE0().getTypeName();
         TypeName e1 = binaryExpression.getE1().getTypeName();
         Scanner.Token op = binaryExpression.getOp();
-        if (e0.isType(INTEGER) && e1.isType(INTEGER) && (op.isKind(PLUS) || op.isKind(MINUS))) {
+        if (e0.isType(INTEGER) && e1.isType(INTEGER) && op.isKind(PLUS, MINUS)) {
             binaryExpression.setTypeName(INTEGER);
             return binaryExpression.getTypeName();
-        } else if (e0.isType(IMAGE) && e1.isType(IMAGE) && (op.isKind(PLUS) || op.isKind(MINUS))) {
+        } else if (e0.isType(IMAGE) && e1.isType(IMAGE) && op.isKind(PLUS, MINUS)) {
             binaryExpression.setTypeName(IMAGE);
             return binaryExpression.getTypeName();
         } else if (op.isKind(LT, GT, LE, GE) && ((e0.isType(e1) && (e0.isType(INTEGER) || e0.isType(BOOLEAN))))) {
@@ -87,8 +87,11 @@ public class TypeCheckVisitor implements ASTVisitor {
         } else if (op.isKind(TIMES) && ((e0.isType(INTEGER) && e1.isType(IMAGE)) || (e0.isType(IMAGE) && e1.isType(INTEGER)))) {
             binaryExpression.setTypeName(IMAGE);
             return binaryExpression.getTypeName();
-        } else if (e0.isType(INTEGER) && e1.isType(INTEGER) && (op.isKind(TIMES) || (op.isKind(DIV)))) {
+        } else if (e0.isType(INTEGER) && e1.isType(INTEGER) && op.isKind(TIMES, DIV)) {
             binaryExpression.setTypeName(INTEGER);
+            return binaryExpression.getTypeName();
+        } else if (e0.isType(BOOLEAN) && e1.isType(BOOLEAN) && op.isKind(OR, AND)) {
+            binaryExpression.setTypeName(BOOLEAN);
             return binaryExpression.getTypeName();
         } else
             throw new TypeCheckException("Encounterd a type error at " + binaryExpression.getFirstToken().getLinePos() + " when visiting BinaryExpression");
