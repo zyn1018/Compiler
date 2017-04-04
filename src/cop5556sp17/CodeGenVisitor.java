@@ -131,7 +131,13 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
         // visit the local variables
         List<Dec> decList = program.getB().getDecs();
         for (Dec dec : decList) {
-            mv.visitLocalVariable(dec.getIdent().getText(), dec.getTypeName().getJVMTypeDesc(), null, startLabelMap.get(dec), endLabelMap.get(dec), dec.slotNum);
+            if (startLabelMap.get(dec) == null || endLabelMap.get(dec) == null) {
+                Label slabel = new Label();
+                Label elabel = new Label();
+                mv.visitLocalVariable(dec.getIdent().getText(), dec.getTypeName().getJVMTypeDesc(), null, slabel, elabel, dec.slotNum);
+            } else {
+                mv.visitLocalVariable(dec.getIdent().getText(), dec.getTypeName().getJVMTypeDesc(), null, startLabelMap.get(dec), endLabelMap.get(dec), dec.slotNum);
+            }
         }
         mv.visitMaxs(1, 1);
         mv.visitEnd(); // end of run method
