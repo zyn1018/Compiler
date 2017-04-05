@@ -369,6 +369,10 @@ public class Scanner {
                             pos++;
                         }
                         break;
+                        case '\t': {
+                            pos++;
+                        }
+                        break;
 
                         default: {
                             if (Character.isDigit(ch)) {
