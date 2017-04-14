@@ -144,7 +144,6 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
         mv.visitMaxs(1, 1);
         mv.visitEnd(); // end of run method
 
-
         cw.visitEnd();//end of class
 
         //generate classfile and return it
@@ -307,11 +306,8 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
                 mv.visitLabel(l4);
                 mv.visitInsn(ICONST_0);
                 mv.visitLabel(l5);
-
             }
         }
-
-
         return null;
     }
 
@@ -326,7 +322,6 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
         for (Statement statement : block.getStatements()) {
             statement.visit(this, arg);
         }
-
         mv.visitLabel(endLabel);
         return null;
     }
@@ -480,9 +475,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
             mv.visitMethodInsn(INVOKESPECIAL, "java/net/URL", "<init>", "(Ljava/lang/String;)V", false);
         }
         mv.visitFieldInsn(PUTFIELD, className, paramDec.getIdent().getText(), paramDec.getTypeName().getJVMTypeDesc());
-
         return null;
-
     }
 
     @Override
@@ -512,7 +505,6 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
         mv.visitLabel(GUARD);
         whileStatement.getE().visit(this, arg);
         mv.visitJumpInsn(IFNE, BODY);
-
         return null;
     }
 
