@@ -23,9 +23,9 @@ public class Type  {
 	public static enum TypeName {
 		INTEGER("I"), 
 		BOOLEAN("Z"), 
-		IMAGE("Ljava/awt/image/BufferedImage;"), 
-		FRAME("Lcop5556sp17/MyFrame;"),
-	    URL("Ljava/net/URL;"), 
+		IMAGE("Ljava/awt/image/BufferedImage;"),
+		FRAME("Lcop5556sp17/PLPRuntimeFrame;"),
+		URL("Ljava/net/URL;"),
 	    FILE("Ljava/io/File;"), 
 	    NONE(null);
 		

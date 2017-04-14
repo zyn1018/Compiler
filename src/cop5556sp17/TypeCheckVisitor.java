@@ -58,8 +58,11 @@ public class TypeCheckVisitor implements ASTVisitor {
         } else if (e0TypeName.isType(IMAGE) && e1 instanceof ImageOpChain && e1.getFirstToken().isKind(KW_SCALE) && op.isKind(ARROW)) {
             binaryChain.setTypeName(IMAGE);
             return binaryChain.getTypeName();
-        } else if (e0TypeName.isType(IMAGE) && e1 instanceof IdentChain && op.isKind(ARROW)) {
+        } else if (e0TypeName.isType(IMAGE) && e1 instanceof IdentChain && e1TypemName.isType(IMAGE) && op.isKind(ARROW)) {
             binaryChain.setTypeName(IMAGE);
+            return binaryChain.getTypeName();
+        } else if (e0TypeName.isType(INTEGER) && e1 instanceof IdentChain && e1TypemName.isType(INTEGER) && op.isKind(ARROW)) {
+            binaryChain.setTypeName(INTEGER);
             return binaryChain.getTypeName();
         } else
             throw new TypeCheckException("Encounterd a type error at " + binaryChain.getFirstToken().getLinePos() + " when visiting BinaryChain");
@@ -92,6 +95,12 @@ public class TypeCheckVisitor implements ASTVisitor {
             return binaryExpression.getTypeName();
         } else if (e0.isType(BOOLEAN) && e1.isType(BOOLEAN) && op.isKind(OR, AND)) {
             binaryExpression.setTypeName(BOOLEAN);
+            return binaryExpression.getTypeName();
+        } else if (e0.isType(IMAGE) && e1.isType(INTEGER) && op.isKind(DIV)) {
+            binaryExpression.setTypeName(IMAGE);
+            return binaryExpression.getTypeName();
+        } else if (e0.isType(IMAGE) && e1.isType(INTEGER) && op.isKind(MOD)) {
+            binaryExpression.setTypeName(IMAGE);
             return binaryExpression.getTypeName();
         } else
             throw new TypeCheckException("Encounterd a type error at " + binaryExpression.getFirstToken().getLinePos() + " when visiting BinaryExpression");

@@ -1,7 +1,6 @@
 package cop5556sp17;
 
 import cop5556sp17.AST.*;
-import cop5556sp17.AST.Type;
 import org.objectweb.asm.*;
 
 import java.util.ArrayList;
@@ -9,7 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static cop5556sp17.AST.Type.TypeName;
 import static cop5556sp17.AST.Type.TypeName.*;
+import static cop5556sp17.Scanner.Kind.*;
+
 
 public class CodeGenVisitor implements ASTVisitor, Opcodes {
 
@@ -169,93 +171,119 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
     public Object visitBinaryExpression(BinaryExpression binaryExpression, Object arg) throws Exception {
         binaryExpression.getE0().visit(this, arg);
         binaryExpression.getE1().visit(this, arg);
+        TypeName e0TypeName = binaryExpression.getE0().getTypeName();
+        TypeName e1TypeName = binaryExpression.getE1().getTypeName();
         Scanner.Kind opKind = binaryExpression.getOp().kind;
         Label falseLabel = new Label();
         Label after = new Label();
-        switch (opKind) {
-            case PLUS: {
-                mv.visitInsn(IADD);
-            }
-            break;
-            case MINUS: {
-                mv.visitInsn(ISUB);
-            }
-            break;
-            case OR: {
-                mv.visitInsn(IOR);
-            }
-            break;
-            case TIMES: {
-                mv.visitInsn(IMUL);
-            }
-            break;
-            case DIV: {
-                mv.visitInsn(IDIV);
-            }
-            break;
-            case AND: {
-                mv.visitInsn(IAND);
-            }
-            break;
-            case MOD: {
-                mv.visitInsn(IREM);
-            }
-            break;
-            case LT: {
-                mv.visitJumpInsn(IF_ICMPGE, falseLabel);
-                mv.visitInsn(ICONST_1);
-                mv.visitJumpInsn(GOTO, after);
-                mv.visitLabel(falseLabel);
-                mv.visitInsn(ICONST_0);
-                mv.visitLabel(after);
-            }
-            break;
-            case LE: {
-                mv.visitJumpInsn(IF_ICMPGT, falseLabel);
-                mv.visitInsn(ICONST_1);
-                mv.visitJumpInsn(GOTO, after);
-                mv.visitLabel(falseLabel);
-                mv.visitInsn(ICONST_0);
-                mv.visitLabel(after);
-            }
-            break;
-            case GT: {
-                mv.visitJumpInsn(IF_ICMPLE, falseLabel);
-                mv.visitInsn(ICONST_1);
-                mv.visitJumpInsn(GOTO, after);
-                mv.visitLabel(falseLabel);
-                mv.visitInsn(ICONST_0);
-                mv.visitLabel(after);
-            }
-            break;
-            case GE: {
-                mv.visitJumpInsn(IF_ICMPLT, falseLabel);
-                mv.visitInsn(ICONST_1);
-                mv.visitJumpInsn(GOTO, after);
-                mv.visitLabel(falseLabel);
-                mv.visitInsn(ICONST_0);
-                mv.visitLabel(after);
-            }
-            break;
-            case EQUAL: {
-                mv.visitJumpInsn(IF_ICMPNE, falseLabel);
-                mv.visitInsn(ICONST_1);
-                mv.visitJumpInsn(GOTO, after);
-                mv.visitLabel(falseLabel);
-                mv.visitInsn(ICONST_0);
-                mv.visitLabel(after);
-            }
-            break;
-            case NOTEQUAL: {
-                mv.visitJumpInsn(IF_ICMPEQ, falseLabel);
-                mv.visitInsn(ICONST_1);
-                mv.visitJumpInsn(GOTO, after);
-                mv.visitLabel(falseLabel);
-                mv.visitInsn(ICONST_0);
-                mv.visitLabel(after);
-            }
-            break;
+        if (e0TypeName.isType(TypeName.INTEGER, BOOLEAN) && e1TypeName.isType(TypeName.INTEGER, BOOLEAN)) {
+            switch (opKind) {
+                case PLUS: {
+                    mv.visitInsn(IADD);
+                }
+                break;
+                case MINUS: {
+                    mv.visitInsn(ISUB);
+                }
+                break;
+                case OR: {
+                    mv.visitInsn(IOR);
+                }
+                break;
+                case TIMES: {
+                    mv.visitInsn(IMUL);
+                }
+                break;
+                case DIV: {
+                    mv.visitInsn(IDIV);
+                }
+                break;
+                case AND: {
+                    mv.visitInsn(IAND);
+                }
+                break;
+                case MOD: {
+                    mv.visitInsn(IREM);
+                }
+                break;
+                case LT: {
+                    mv.visitJumpInsn(IF_ICMPGE, falseLabel);
+                    mv.visitInsn(ICONST_1);
+                    mv.visitJumpInsn(GOTO, after);
+                    mv.visitLabel(falseLabel);
+                    mv.visitInsn(ICONST_0);
+                    mv.visitLabel(after);
+                }
+                break;
+                case LE: {
+                    mv.visitJumpInsn(IF_ICMPGT, falseLabel);
+                    mv.visitInsn(ICONST_1);
+                    mv.visitJumpInsn(GOTO, after);
+                    mv.visitLabel(falseLabel);
+                    mv.visitInsn(ICONST_0);
+                    mv.visitLabel(after);
+                }
+                break;
+                case GT: {
+                    mv.visitJumpInsn(IF_ICMPLE, falseLabel);
+                    mv.visitInsn(ICONST_1);
+                    mv.visitJumpInsn(GOTO, after);
+                    mv.visitLabel(falseLabel);
+                    mv.visitInsn(ICONST_0);
+                    mv.visitLabel(after);
+                }
+                break;
+                case GE: {
+                    mv.visitJumpInsn(IF_ICMPLT, falseLabel);
+                    mv.visitInsn(ICONST_1);
+                    mv.visitJumpInsn(GOTO, after);
+                    mv.visitLabel(falseLabel);
+                    mv.visitInsn(ICONST_0);
+                    mv.visitLabel(after);
+                }
+                break;
+                case EQUAL: {
+                    mv.visitJumpInsn(IF_ICMPNE, falseLabel);
+                    mv.visitInsn(ICONST_1);
+                    mv.visitJumpInsn(GOTO, after);
+                    mv.visitLabel(falseLabel);
+                    mv.visitInsn(ICONST_0);
+                    mv.visitLabel(after);
+                }
+                break;
+                case NOTEQUAL: {
+                    mv.visitJumpInsn(IF_ICMPEQ, falseLabel);
+                    mv.visitInsn(ICONST_1);
+                    mv.visitJumpInsn(GOTO, after);
+                    mv.visitLabel(falseLabel);
+                    mv.visitInsn(ICONST_0);
+                    mv.visitLabel(after);
+                }
+                break;
 
+            }
+        } else if (e0TypeName.isType(IMAGE) && e1TypeName.isType(IMAGE)) {
+            switch (opKind) {
+                case PLUS: {
+                    mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "add", PLPRuntimeImageOps.addSig, false);
+                }
+                break;
+                case MINUS: {
+                    mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "sub", PLPRuntimeImageOps.subSig, false);
+                }
+                break;
+            }
+        } else if (e0TypeName.isType(IMAGE) && e1TypeName.isType(TypeName.INTEGER) && binaryExpression.getOp().isKind(TIMES)) {
+            mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mul", PLPRuntimeImageOps.mulSig, false);
+        } else if (e0TypeName.isType(TypeName.INTEGER) && e1TypeName.isType(IMAGE) && binaryExpression.getOp().isKind(TIMES)) {
+            mv.visitInsn(SWAP);
+            mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mul", PLPRuntimeImageOps.mulSig, false);
+        } else if (e0TypeName.isType(IMAGE) && e1TypeName.isType(TypeName.INTEGER)) {
+            if (binaryExpression.getOp().isKind(DIV)) {
+                mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "div", PLPRuntimeImageOps.divSig, false);
+            } else if (binaryExpression.getOp().isKind(MOD)) {
+                mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mod", PLPRuntimeImageOps.modSig, false);
+            }
         }
 
 
@@ -290,7 +318,11 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 
     @Override
     public Object visitConstantExpression(ConstantExpression constantExpression, Object arg) {
-        assert false : "not yet implemented";
+        if (constantExpression.getFirstToken().isKind(Scanner.Kind.KW_SCREENHEIGHT)) {
+            mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getScreenHeight", PLPRuntimeFrame.getScreenHeightSig, false);
+        } else if (constantExpression.getFirstToken().isKind(Scanner.Kind.KW_SCREENWIDTH)) {
+            mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getScreenWidth", PLPRuntimeFrame.getScreenWidthSig, false);
+        }
         return null;
     }
 
@@ -314,7 +346,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 
     @Override
     public Object visitIdentChain(IdentChain identChain, Object arg) throws Exception {
-        assert false : "not yet implemented";
+
         return null;
     }
 
@@ -323,7 +355,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
         if (identExpression.getDec() instanceof ParamDec) {
             mv.visitVarInsn(ALOAD, 0);
             mv.visitFieldInsn(GETFIELD, className, identExpression.getDec().getIdent().getText(), identExpression.getDec().getTypeName().getJVMTypeDesc());
-        } else if (identExpression.getDec().getTypeName().isType(BOOLEAN, Type.TypeName.INTEGER)) {
+        } else if (identExpression.getDec().getTypeName().isType(BOOLEAN, TypeName.INTEGER)) {
             mv.visitVarInsn(ILOAD, identExpression.getDec().slotNum);
         } else if (identExpression.getDec().getTypeName().isType(IMAGE, FRAME, FILE, URL)) {
             mv.visitVarInsn(ALOAD, identExpression.getDec().slotNum);
@@ -337,7 +369,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
             mv.visitVarInsn(ALOAD, 0);
             mv.visitInsn(SWAP);
             mv.visitFieldInsn(PUTFIELD, className, identX.getDec().getIdent().getText(), identX.getDec().getTypeName().getJVMTypeDesc());
-        } else if (identX.getDec().getTypeName().isType(BOOLEAN, Type.TypeName.INTEGER)) {
+        } else if (identX.getDec().getTypeName().isType(BOOLEAN, TypeName.INTEGER)) {
             mv.visitVarInsn(ISTORE, identX.getDec().slotNum);
         } else if (identX.getDec().getTypeName().isType(IMAGE, FRAME, FILE, URL)) {
             mv.visitVarInsn(ASTORE, identX.getDec().slotNum);
@@ -381,10 +413,18 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
         mv.visitVarInsn(ALOAD, 1);
         mv.visitLdcInsn(count++);
         mv.visitInsn(AALOAD);
-        if (paramDec.getTypeName().isType(Type.TypeName.INTEGER)) {
+        if (paramDec.getTypeName().isType(TypeName.INTEGER)) {
             mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "parseInt", "(Ljava/lang/String;)I", false);
         } else if (paramDec.getTypeName().isType(BOOLEAN)) {
             mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "parseBoolean", "(Ljava/lang/String;)Z", false);
+        } else if (paramDec.getTypeName().isType(FILE)) {
+            mv.visitTypeInsn(NEW, "java/io/File");
+            mv.visitInsn(DUP);
+            mv.visitMethodInsn(INVOKESPECIAL, "java/io/File", "<init>", "(Ljava/lang/String;)V", false);
+        } else if (paramDec.getTypeName().isType(URL)) {
+            mv.visitTypeInsn(NEW, "java/net/URL");
+            mv.visitInsn(DUP);
+            mv.visitMethodInsn(INVOKESPECIAL, "java/net/URL", "<init>", "(Ljava/lang/String;)V", false);
         }
         mv.visitFieldInsn(PUTFIELD, className, paramDec.getIdent().getText(), paramDec.getTypeName().getJVMTypeDesc());
 
@@ -394,13 +434,18 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 
     @Override
     public Object visitSleepStatement(SleepStatement sleepStatement, Object arg) throws Exception {
-        assert false : "not yet implemented";
+        sleepStatement.getE().visit(this, arg);
+        mv.visitInsn(I2L);
+        mv.visitMethodInsn(INVOKESTATIC, "java/lang/Thread", "sleep", "(J)V", false);
         return null;
     }
 
     @Override
     public Object visitTuple(Tuple tuple, Object arg) throws Exception {
-        assert false : "not yet implemented";
+        List<Expression> exprlist = tuple.getExprList();
+        for (Expression expr : exprlist) {
+            expr.visit(this, arg);
+        }
         return null;
     }
 
