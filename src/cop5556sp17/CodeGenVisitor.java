@@ -284,6 +284,31 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
             } else if (binaryExpression.getOp().isKind(MOD)) {
                 mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mod", PLPRuntimeImageOps.modSig, false);
             }
+        } else if (e0TypeName.isType(BOOLEAN) && e1TypeName.isType(BOOLEAN)) {
+            if (binaryExpression.getOp().isKind(AND)) {
+                Label l3 = new Label();
+                mv.visitJumpInsn(IFEQ, l3);
+                mv.visitJumpInsn(IFEQ, l3);
+                mv.visitInsn(ICONST_1);
+                Label l4 = new Label();
+                mv.visitJumpInsn(GOTO, l4);
+                mv.visitLabel(l3);
+                mv.visitInsn(ICONST_0);
+                mv.visitLabel(l4);
+            } else if (binaryExpression.getOp().isKind(OR)) {
+                Label l3 = new Label();
+                mv.visitJumpInsn(IFNE, l3);
+                Label l4 = new Label();
+                mv.visitJumpInsn(IFEQ, l4);
+                mv.visitLabel(l3);
+                mv.visitInsn(ICONST_1);
+                Label l5 = new Label();
+                mv.visitJumpInsn(GOTO, l5);
+                mv.visitLabel(l4);
+                mv.visitInsn(ICONST_0);
+                mv.visitLabel(l5);
+
+            }
         }
 
 
@@ -334,13 +359,33 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 
     @Override
     public Object visitFilterOpChain(FilterOpChain filterOpChain, Object arg) throws Exception {
-        assert false : "not yet implemented";
+        filterOpChain.getArg().visit(this, arg);
+        Scanner.Token filterOp = filterOpChain.getFirstToken();
+        if (filterOp.isKind(OP_BLUR)) {
+            mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "blurOp", PLPRuntimeFilterOps.opSig, false);
+        } else if (filterOp.isKind(OP_CONVOLVE)) {
+            mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "convolveOp", PLPRuntimeFilterOps.opSig, false);
+        } else if (filterOp.isKind(OP_GRAY)) {
+            mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "grayOp", PLPRuntimeFilterOps.opSig, false);
+        }
         return null;
     }
 
     @Override
     public Object visitFrameOpChain(FrameOpChain frameOpChain, Object arg) throws Exception {
-        assert false : "not yet implemented";
+        frameOpChain.getArg().visit(this, arg);
+        Scanner.Token frameOp = frameOpChain.getFirstToken();
+        if (frameOp.isKind(KW_SHOW)) {
+            mv.visitMethodInsn(INVOKEVIRTUAL, PLPRuntimeFrame.JVMClassName, "showImage", PLPRuntimeFrame.showImageDesc, false);
+        } else if (frameOp.isKind(KW_HIDE)) {
+            mv.visitMethodInsn(INVOKEVIRTUAL, PLPRuntimeFrame.JVMClassName, "hideImage", PLPRuntimeFrame.hideImageDesc, false);
+        } else if (frameOp.isKind(KW_MOVE)) {
+            mv.visitMethodInsn(INVOKEVIRTUAL, PLPRuntimeFrame.JVMClassName, "moveFrame", PLPRuntimeFrame.moveFrameDesc, false);
+        } else if (frameOp.isKind(KW_XLOC)) {
+            mv.visitMethodInsn(INVOKEVIRTUAL, PLPRuntimeFrame.JVMClassName, "getXVal", PLPRuntimeFrame.getXValDesc, false);
+        } else if (frameOp.isKind(KW_YLOC)) {
+            mv.visitMethodInsn(INVOKEVIRTUAL, PLPRuntimeFrame.JVMClassName, "getYVal", PLPRuntimeFrame.getYValDesc, false);
+        }
         return null;
     }
 
@@ -393,7 +438,15 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 
     @Override
     public Object visitImageOpChain(ImageOpChain imageOpChain, Object arg) throws Exception {
-        assert false : "not yet implemented";
+        imageOpChain.getArg().visit(this, arg);
+        Scanner.Token imageOp = imageOpChain.getFirstToken();
+        if (imageOp.isKind(OP_WIDTH)) {
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/awt/image/BufferedImage", "getWidth", "()I", false);
+        } else if (imageOp.isKind(OP_HEIGHT)) {
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/awt/image/BufferedImage", "getHeight", "()I", false);
+        } else if (imageOp.isKind(KW_SCALE)) {
+            mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "scale", PLPRuntimeImageOps.scaleSig, false);
+        }
         return null;
     }
 

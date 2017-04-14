@@ -75,7 +75,7 @@ public class TypeCheckVisitor implements ASTVisitor {
         TypeName e0 = binaryExpression.getE0().getTypeName();
         TypeName e1 = binaryExpression.getE1().getTypeName();
         Scanner.Token op = binaryExpression.getOp();
-        if (e0.isType(INTEGER) && e1.isType(INTEGER) && op.isKind(PLUS, MINUS)) {
+        if (e0.isType(INTEGER) && e1.isType(INTEGER) && op.isKind(PLUS, MINUS, MOD)) {
             binaryExpression.setTypeName(INTEGER);
             return binaryExpression.getTypeName();
         } else if (e0.isType(IMAGE) && e1.isType(IMAGE) && op.isKind(PLUS, MINUS)) {
