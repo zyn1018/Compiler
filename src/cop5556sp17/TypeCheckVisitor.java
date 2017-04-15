@@ -162,6 +162,8 @@ public class TypeCheckVisitor implements ASTVisitor {
         Dec dec = symtab.lookup(ident);
         if (dec != null) {
             identChain.setTypeName(getTypeName(dec.getFirstToken()));
+            identChain.setDec(dec);
+            identChain.getDec().setTypeName(getTypeName(identChain.getDec().getFirstToken()));
             return null;
         } else
             throw new TypeCheckException("Encounterd a type error at " + identChain.getFirstToken().getLinePos() + " when visiting identChain");
@@ -174,6 +176,7 @@ public class TypeCheckVisitor implements ASTVisitor {
         if (temp != null) {
             identExpression.setTypeName(getTypeName(temp.getFirstToken()));
             identExpression.setDec(temp);
+            identExpression.getDec().setTypeName(getTypeName(identExpression.getDec().getFirstToken()));
         } else
             throw new TypeCheckException("Encounterd a type error at " + identExpression.getFirstToken().getLinePos() + " when visiting identExpression");
         return null;
