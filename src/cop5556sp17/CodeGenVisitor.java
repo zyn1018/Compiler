@@ -362,7 +362,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
     @Override
     public Object visitDec(Dec declaration, Object arg) throws Exception {
         declaration.slotNum = slot_Number++;
-        if (declaration.getTypeName().isType(FRAME)) {
+        if (declaration.getTypeName().isType(FRAME, IMAGE)) {
             mv.visitInsn(ACONST_NULL);
             mv.visitVarInsn(ASTORE, declaration.slotNum);
         }
@@ -392,11 +392,11 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
         } else if (frameOp.isKind(KW_HIDE)) {
             mv.visitMethodInsn(INVOKEVIRTUAL, PLPRuntimeFrame.JVMClassName, "hideImage", PLPRuntimeFrame.hideImageDesc, false);
         } else if (frameOp.isKind(KW_MOVE)) {
-            mv.visitMethodInsn(INVOKEVIRTUAL, PLPRuntimeFrame.JVMClassName, "moveFrame", PLPRuntimeFrame.moveFrameDesc, false);
+            mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "moveFrame", PLPRuntimeFrame.moveFrameDesc, false);
         } else if (frameOp.isKind(KW_XLOC)) {
-            mv.visitMethodInsn(INVOKEVIRTUAL, PLPRuntimeFrame.JVMClassName, "getXVal", PLPRuntimeFrame.getXValDesc, false);
+            mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getXVal", PLPRuntimeFrame.getXValDesc, false);
         } else if (frameOp.isKind(KW_YLOC)) {
-            mv.visitMethodInsn(INVOKEVIRTUAL, PLPRuntimeFrame.JVMClassName, "getYVal", PLPRuntimeFrame.getYValDesc, false);
+            mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getYVal", PLPRuntimeFrame.getYValDesc, false);
         }
         return null;
     }
