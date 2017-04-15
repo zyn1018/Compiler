@@ -517,9 +517,10 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
             mv.visitInsn(DUP);
             mv.visitMethodInsn(INVOKESPECIAL, "java/io/File", "<init>", "(Ljava/lang/String;)V", false);
         } else if (paramDec.getTypeName().isType(URL)) {
-            mv.visitTypeInsn(NEW, "java/net/URL");
-            mv.visitInsn(DUP);
-            mv.visitMethodInsn(INVOKESPECIAL, "java/net/URL", "<init>", "(Ljava/lang/String;)V", false);
+            mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "getURL", PLPRuntimeImageIO.getURLSig, false);
+//            mv.visitTypeInsn(NEW, "java/net/URL");
+//            mv.visitInsn(DUP);
+//            mv.visitMethodInsn(INVOKESPECIAL, "java/net/URL", "<init>", "(Ljava/lang/String;)V", false);
         }
         mv.visitFieldInsn(PUTFIELD, className, paramDec.getIdent().getText(), paramDec.getTypeName().getJVMTypeDesc());
         return null;
