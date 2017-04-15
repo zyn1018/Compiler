@@ -1,6 +1,7 @@
 package cop5556sp17;
 
 import cop5556sp17.AST.*;
+import cop5556sp17.AST.Type;
 import org.objectweb.asm.*;
 
 import java.util.ArrayList;
@@ -403,17 +404,11 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 
     @Override
     public Object visitIdentChain(IdentChain identChain, Object arg) throws Exception {
-        //if ident is on the left side of binary chain, the arg == true. Otherwise, arg == false
+//        if ident is on the left side of binary chain, the arg == true. Otherwise, arg == false
         if ((boolean) arg == true) {
             if (identChain.getDec() instanceof ParamDec) {
-                if (identChain.getDec().getTypeName().isType(TypeName.INTEGER, BOOLEAN)) {
-                    mv.visitVarInsn(ILOAD, 0);
-                    mv.visitFieldInsn(GETFIELD, className, identChain.getDec().getIdent().getText(), identChain.getDec().getTypeName().getJVMTypeDesc());
-                } else {
-                    //URLs and Files
-                    mv.visitVarInsn(ALOAD, 0);
-                    mv.visitFieldInsn(GETFIELD, className, identChain.getDec().getIdent().getText(), identChain.getDec().getTypeName().getJVMTypeDesc());
-                }
+                mv.visitVarInsn(ALOAD, 0);
+                mv.visitFieldInsn(GETFIELD, className, identChain.getDec().getIdent().getText(), identChain.getDec().getTypeName().getJVMTypeDesc());
             } else if (identChain.getDec().getTypeName().isType(BOOLEAN, TypeName.INTEGER)) {
                 mv.visitVarInsn(ILOAD, identChain.getDec().slotNum);
             } else if (identChain.getDec().getTypeName().isType(IMAGE, FRAME)) {
@@ -430,6 +425,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
                 mv.visitInsn(DUP);
                 mv.visitVarInsn(ASTORE, identChain.getDec().slotNum);
             } else if (decTypeName.isType(FILE)) {
+                mv.visitVarInsn(ALOAD, identChain.getDec().slotNum);
                 mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "write", PLPRuntimeImageIO.writeImageDesc, false);
             } else if (decTypeName.isType(FRAME)) {
                 mv.visitVarInsn(ALOAD, identChain.getDec().slotNum);
@@ -444,15 +440,9 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
     @Override
     public Object visitIdentExpression(IdentExpression identExpression, Object arg) throws Exception {
         if (identExpression.getDec() instanceof ParamDec) {
-            if (identExpression.getDec().getTypeName().isType(TypeName.INTEGER, BOOLEAN)) {
-                mv.visitVarInsn(ILOAD, 0);
-                mv.visitFieldInsn(GETFIELD, className, identExpression.getDec().getIdent().getText(), identExpression.getDec().getTypeName().getJVMTypeDesc());
-            } else {
-                //URLs and Files
-                mv.visitVarInsn(ALOAD, 0);
-                mv.visitFieldInsn(GETFIELD, className, identExpression.getDec().getIdent().getText(), identExpression.getDec().getTypeName().getJVMTypeDesc());
-            }
-        } else if (identExpression.getDec().getTypeName().isType(BOOLEAN, TypeName.INTEGER)) {
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, className, identExpression.getDec().getIdent().getText(), identExpression.getDec().getTypeName().getJVMTypeDesc());
+        } else if (identExpression.getDec().getTypeName().isType(BOOLEAN, Type.TypeName.INTEGER)) {
             mv.visitVarInsn(ILOAD, identExpression.getDec().slotNum);
         } else if (identExpression.getDec().getTypeName().isType(IMAGE, FRAME)) {
             mv.visitVarInsn(ALOAD, identExpression.getDec().slotNum);
@@ -463,17 +453,10 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
     @Override
     public Object visitIdentLValue(IdentLValue identX, Object arg) throws Exception {
         if (identX.getDec() instanceof ParamDec) {
-            if (identX.getDec().getTypeName().isType(TypeName.INTEGER, BOOLEAN)) {
-                mv.visitVarInsn(ISTORE, 0);
-                mv.visitInsn(SWAP);
-                mv.visitFieldInsn(PUTFIELD, className, identX.getDec().getIdent().getText(), identX.getDec().getTypeName().getJVMTypeDesc());
-            } else {
-                //URLs and Files
-                mv.visitVarInsn(ASTORE, 0);
-                mv.visitInsn(SWAP);
-                mv.visitFieldInsn(PUTFIELD, className, identX.getDec().getIdent().getText(), identX.getDec().getTypeName().getJVMTypeDesc());
-            }
-        } else if (identX.getDec().getTypeName().isType(BOOLEAN, TypeName.INTEGER)) {
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitInsn(SWAP);
+            mv.visitFieldInsn(PUTFIELD, className, identX.getDec().getIdent().getText(), identX.getDec().getTypeName().getJVMTypeDesc());
+        } else if (identX.getDec().getTypeName().isType(BOOLEAN, Type.TypeName.INTEGER)) {
             mv.visitVarInsn(ISTORE, identX.getDec().slotNum);
         } else if (identX.getDec().getTypeName().isType(IMAGE, FRAME)) {
             mv.visitVarInsn(ASTORE, identX.getDec().slotNum);

@@ -3,8 +3,6 @@ package cop5556sp17;
 
 import cop5556sp17.AST.ASTNode;
 import cop5556sp17.AST.Program;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileOutputStream;
@@ -20,18 +18,19 @@ public class CodeGenVisitorTest {
         }
     }
 
-    boolean devel = false;
-    boolean grade = true;
+    boolean devel = true;
+    boolean grade = false;
+//
+//    @Before
+//    public void initLog() {
+//        if (devel || grade) PLPRuntimeLog.initLog();
+//    }
+//
+//    @After
+//    public void printLog() {
+//        System.out.println(PLPRuntimeLog.getString());
+//    }
 
-    @Before
-    public void initLog() {
-        if (devel || grade) PLPRuntimeLog.initLog();
-    }
-
-    @After
-    public void printLog() {
-        System.out.println(PLPRuntimeLog.getString());
-    }
     @Test
     public void emptyProg() throws Exception {
         //scan, parse, and type check the program
