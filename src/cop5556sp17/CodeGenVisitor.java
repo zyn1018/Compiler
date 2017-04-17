@@ -295,29 +295,6 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
             } else if (binaryExpression.getOp().isKind(MOD)) {
                 mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mod", PLPRuntimeImageOps.modSig, false);
             }
-        } else if (e0TypeName.isType(BOOLEAN) && e1TypeName.isType(BOOLEAN)) {
-            if (binaryExpression.getOp().isKind(AND)) {
-                Label l1 = new Label();
-                mv.visitJumpInsn(IFEQ, l1);
-                mv.visitJumpInsn(IFEQ, l1);
-                mv.visitInsn(ICONST_1);
-                Label l2 = new Label();
-                mv.visitJumpInsn(GOTO, l2);
-                mv.visitLabel(l1);
-                mv.visitInsn(ICONST_0);
-                mv.visitLabel(l2);
-            } else if (binaryExpression.getOp().isKind(OR)) {
-                Label l1 = new Label();
-                Label l2 = new Label();
-                mv.visitJumpInsn(IFEQ, l2);
-                mv.visitLabel(l1);
-                mv.visitInsn(ICONST_1);
-                Label l3 = new Label();
-                mv.visitJumpInsn(GOTO, l3);
-                mv.visitLabel(l2);
-                mv.visitInsn(ICONST_0);
-                mv.visitLabel(l3);
-            }
         }
         return null;
     }
