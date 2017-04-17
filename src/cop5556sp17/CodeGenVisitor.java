@@ -505,22 +505,23 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
         fv = cw.visitField(0, paramDec.getIdent().getText(), paramDec.getTypeName().getJVMTypeDesc(), null, null);
         fv.visitEnd();
         mv.visitVarInsn(ALOAD, 0);
+        if (paramDec.getTypeName().isType(FILE)) {
+            mv.visitTypeInsn(NEW, "java/io/File");
+            mv.visitInsn(DUP);
+        }
         mv.visitVarInsn(ALOAD, 1);
         mv.visitLdcInsn(count++);
-        mv.visitInsn(AALOAD);
+        if (!paramDec.getTypeName().isType(URL)) {
+            mv.visitInsn(AALOAD);
+        }
         if (paramDec.getTypeName().isType(TypeName.INTEGER)) {
             mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "parseInt", "(Ljava/lang/String;)I", false);
         } else if (paramDec.getTypeName().isType(BOOLEAN)) {
             mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "parseBoolean", "(Ljava/lang/String;)Z", false);
         } else if (paramDec.getTypeName().isType(FILE)) {
-            mv.visitTypeInsn(NEW, "java/io/File");
-            mv.visitInsn(DUP);
             mv.visitMethodInsn(INVOKESPECIAL, "java/io/File", "<init>", "(Ljava/lang/String;)V", false);
         } else if (paramDec.getTypeName().isType(URL)) {
             mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "getURL", PLPRuntimeImageIO.getURLSig, false);
-//            mv.visitTypeInsn(NEW, "java/net/URL");
-//            mv.visitInsn(DUP);
-//            mv.visitMethodInsn(INVOKESPECIAL, "java/net/URL", "<init>", "(Ljava/lang/String;)V", false);
         }
         mv.visitFieldInsn(PUTFIELD, className, paramDec.getIdent().getText(), paramDec.getTypeName().getJVMTypeDesc());
         return null;

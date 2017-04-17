@@ -313,8 +313,8 @@ public class CodeGenVisitorTest {
     public void Prog7() throws Exception {
         //scan, parse, and type check the program
         String progname = "Prog7";
-        String input = progname + " file zyn1 file zyn2 {\n" +
-                "image pic zyn->zyn;}";
+        String input = progname + " url zynurl { image img frame fra\n" +
+                "zynurl->img->fra->show;}";
         Scanner scanner = new Scanner(input);
         scanner.scan();
         Parser parser = new Parser(scanner);
@@ -340,7 +340,8 @@ public class CodeGenVisitorTest {
 
         // directly execute bytecode
         String[] args = new String[1];
-        args[0] = "918.jpg";
+//        args[0] = "918.jpg";
+        args[0] = "http://assets.bugatti.com/typo3conf/ext/bugatti_specials/Resources/Public/Template/content/chiron/gallery/9.jpg";
 
         Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
         instance.run();
