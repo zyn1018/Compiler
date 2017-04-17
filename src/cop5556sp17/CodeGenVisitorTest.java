@@ -390,7 +390,7 @@ public class CodeGenVisitorTest {
         //scan, parse, and type check the program
         String progname = "Prog9";
         String input = progname + " url zynurl,file zynfile { image img image img2 image img3 frame fra\n" +
-                " zynurl->img; zynfile->img2; img3<-img + img2;}";
+                " zynurl->img; zynfile->img2; img3<-img + img2; img3|->blur; img3->zynfile;}";
         Scanner scanner = new Scanner(input);
         scanner.scan();
         Parser parser = new Parser(scanner);
