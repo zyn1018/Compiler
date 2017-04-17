@@ -155,25 +155,26 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
     @Override
     public Object visitAssignmentStatement(AssignmentStatement assignStatement, Object arg) throws Exception {
         assignStatement.getE().visit(this, arg);
-        CodeGenUtils.genPrint(DEVEL, mv, "\nassignment: " + assignStatement.var.getText() + "=");
-        CodeGenUtils.genPrintTOS(GRADE, mv, assignStatement.getE().getTypeName());
-        assignStatement.getVar().visit(this, arg);
         if (assignStatement.getE().getTypeName().isType(IMAGE)) {
             mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
         }
+        CodeGenUtils.genPrint(DEVEL, mv, "\nassignment: " + assignStatement.var.getText() + "=");
+        CodeGenUtils.genPrintTOS(GRADE, mv, assignStatement.getE().getTypeName());
+        assignStatement.getVar().visit(this, arg);
+
         return null;
     }
 
     @Override
     public Object visitBinaryChain(BinaryChain binaryChain, Object arg) throws Exception {
         binaryChain.getE0().visit(this, true);
-        binaryChain.getE1().visit(this, false);
         TypeName e0TypeName = binaryChain.getE0().getTypeName();
         if (e0TypeName.isType(URL)) {
             mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromURL", PLPRuntimeImageIO.readFromURLSig, false);
         } else if (e0TypeName.isType(FILE)) {
             mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
         }
+        binaryChain.getE1().visit(this, false);
         return null;
     }
 
@@ -307,7 +308,6 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
                 mv.visitLabel(l2);
             } else if (binaryExpression.getOp().isKind(OR)) {
                 Label l1 = new Label();
-                mv.visitJumpInsn(IFNE, l1);
                 Label l2 = new Label();
                 mv.visitJumpInsn(IFEQ, l2);
                 mv.visitLabel(l1);
@@ -375,10 +375,13 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
         filterOpChain.getArg().visit(this, arg);
         Scanner.Token filterOp = filterOpChain.getFirstToken();
         if (filterOp.isKind(OP_BLUR)) {
+            mv.visitInsn(ACONST_NULL);
             mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "blurOp", PLPRuntimeFilterOps.opSig, false);
         } else if (filterOp.isKind(OP_CONVOLVE)) {
+            mv.visitInsn(ACONST_NULL);
             mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "convolveOp", PLPRuntimeFilterOps.opSig, false);
         } else if (filterOp.isKind(OP_GRAY)) {
+            mv.visitInsn(ACONST_NULL);
             mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "grayOp", PLPRuntimeFilterOps.opSig, false);
         }
         return null;
@@ -425,7 +428,8 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
                 mv.visitInsn(DUP);
                 mv.visitVarInsn(ASTORE, identChain.getDec().slotNum);
             } else if (decTypeName.isType(FILE)) {
-                mv.visitVarInsn(ALOAD, identChain.getDec().slotNum);
+                mv.visitVarInsn(ALOAD, 0);
+                mv.visitFieldInsn(GETFIELD, className, identChain.getDec().getIdent().getText(), identChain.getDec().getTypeName().getJVMTypeDesc());
                 mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "write", PLPRuntimeImageIO.writeImageDesc, false);
             } else if (decTypeName.isType(FRAME)) {
                 mv.visitVarInsn(ALOAD, identChain.getDec().slotNum);
