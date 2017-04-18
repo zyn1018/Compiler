@@ -118,7 +118,7 @@ public class PLPRuntimeFrame extends JFrame {
 
 
     private void setImage(final BufferedImage image2) {
-        PLPRuntimeLog.globalLogAddEntry("setImage");
+        PLPRuntimeLog.globalLogAddEntry("showImage");
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
