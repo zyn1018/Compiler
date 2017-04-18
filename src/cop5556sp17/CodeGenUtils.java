@@ -90,7 +90,7 @@ public class CodeGenUtils {
         Constructor<?> constructor = testClass.getConstructor(args.getClass());
         return (Runnable) constructor.newInstance(args);
     }
-	
+
 //	/**
 //	 * Generates code to print the given String.
 //	 * IF !GEN, does not generate code.
@@ -118,7 +118,7 @@ public class CodeGenUtils {
      * @param message
      */
     public static void genPrint(boolean GEN, MethodVisitor mv, String message) {
-        if(GEN){
+        if (GEN) {
 //		mv.visitFieldInsn(Opcodes.GETSTATIC, "cop5556sp17/PLPRuntimeLog", "globalLog", "Lcop5556sp17/PLPRuntimeLog;");
             mv.visitLdcInsn(message);
             mv.visitMethodInsn(Opcodes.INVOKESTATIC, "cop5556sp17/PLPRuntimeLog", "globalLogAddEntry", "(Ljava/lang/String;)V", false);
@@ -160,11 +160,12 @@ public class CodeGenUtils {
                 case IMAGE:
                 case FRAME: {
                     /* ignore */
-				} break;
-			default: {
-				throw new RuntimeException("genPrintTOS called unimplemented type " + type);
-			}
-			}
-		}
-	}
+                }
+                break;
+                default: {
+                    throw new RuntimeException("genPrintTOS called unimplemented type " + type);
+                }
+            }
+        }
+    }
 }

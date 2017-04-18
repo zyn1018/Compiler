@@ -230,12 +230,12 @@ public class Parser {
         Token arrow = match(arrowOp);
         ChainElem e1 = chainElem();
         e0 = new BinaryChain(firstToken, e0, arrow, e1);
-            while (t.isKind(arrowOp)) {
-                arrow = match(arrowOp);
-                e1 = chainElem();
-                e0 = new BinaryChain(firstToken, e0, arrow, e1);
+        while (t.isKind(arrowOp)) {
+            arrow = match(arrowOp);
+            e1 = chainElem();
+            e0 = new BinaryChain(firstToken, e0, arrow, e1);
 
-            }
+        }
 
         return e0;
     }
